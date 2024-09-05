@@ -1,7 +1,6 @@
 ﻿using MyParentApi.Application.DTOs.Requests;
 using MyParentApi.Application.DTOs.Responses;
 using MyParentApi.Application.Interfaces;
-using MyParentApi.DAL;
 
 namespace MyParentApi.Application.Services
 {

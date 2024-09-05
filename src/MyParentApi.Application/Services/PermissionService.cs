@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyParentApi.Application.Interfaces;
-using MyParentApi.DAL;
 
 namespace MyParentApi.Application.Services
 {
@@ -27,11 +26,12 @@ namespace MyParentApi.Application.Services
               .FirstOrDefault(u => u.Email == userEmail);
 
             if (user == null)
+            {
                 return false;
+            }
 
             return user.UserRoles.Any(ur => ur.Role.RolePermissions
                 .Any(rp => rp.Area.Name == areaName && rp.Permission.Name == permissionName));
-
         }
     }
 }

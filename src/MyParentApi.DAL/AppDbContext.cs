@@ -6,8 +6,6 @@ namespace MyParentApi.DAL
 {
     public class AppDbContext : DbContext
     {
-        public static DatabaseConfiguration Configuration { get; set; }
-
         private readonly ILogger<AppDbContext> logger;
 
         public virtual DbSet<ApiUser> Users { get; set; }
@@ -15,9 +13,9 @@ namespace MyParentApi.DAL
         public virtual DbSet<ApiArea> Areas { get; set; }
         public virtual DbSet<ApiPermission> Permissions { get; set; }
         public virtual DbSet<ApiRolePermission> RolePermissions { get; set; }
-
-
-        
+        public virtual DbSet<SysLogOper> SysLogOpers { get; set; }
+        public virtual DbSet<UserLogOper> UserLogOpers { get; set; }
+                
         public AppDbContext(ILogger<AppDbContext> logger, DbContextOptions<AppDbContext> options)
             : base(options)
         {
@@ -50,7 +48,6 @@ namespace MyParentApi.DAL
 
             modelBuilder.Entity<ApiUserRole>()
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
-
         }
 
         public async Task<bool> CreateAsync<T>(T entity, CancellationToken cancellationToken = default)
