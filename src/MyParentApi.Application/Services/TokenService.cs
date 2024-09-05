@@ -14,7 +14,9 @@ namespace MyParentApi.Application.Services
         private readonly IConfiguration configuration;
         private readonly AppDbContext context;
 
-        public TokenService(AppDbContext context, IConfiguration configuration)
+        public TokenService(
+            IConfiguration configuration, 
+            AppDbContext context)
         {
             this.configuration = configuration;
             this.context = context;
