@@ -2,7 +2,7 @@
 using MyParentApi.Application.DTOs.Requests;
 using MyParentApi.Application.DTOs.Responses;
 using MyParentApi.Application.Interfaces;
-using MyParentApi.DAL;
+using MyParentApi.Application.Managers;
 
 namespace MyParentApi.Application.Services
 {
@@ -47,7 +47,7 @@ namespace MyParentApi.Application.Services
                 return;
             }
 
-            AddToBlackList(request.Token);
+            TokenBlackListMgr.AddToBlackList(request.Token);
         }
 
         public bool ValidatePassword(string password, string passwordHash)

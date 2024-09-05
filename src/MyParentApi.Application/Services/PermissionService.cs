@@ -12,6 +12,26 @@ namespace MyParentApi.Application.Services
             this.context = context;
         }
 
+        public bool CanView(string email, string area)
+        {
+            return HasPermission(email, area, AreaOption_View);
+        }
+
+        public bool CanEdit(string email, string area)
+        {
+            return HasPermission(email, area, AreaOption_Edit);
+        }
+
+        public bool CanCreate(string email, string area)
+        {
+            return HasPermission(email, area, AreaOption_Create);
+        }
+
+        public bool CanDelete(string email, string area)
+        {
+            return HasPermission(email, area, AreaOption_Delete);
+        }
+
         public bool HasPermission(string userEmail, string areaName, string permissionName)
         {
             var user = context.Users

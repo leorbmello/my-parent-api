@@ -1,4 +1,6 @@
-﻿namespace MyParentApi.Application.DTOs.Requests
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MyParentApi.Application.DTOs.Requests
 {
     public record AuthRequest
     {
@@ -8,7 +10,7 @@
             Password = password;
         }
 
-        public string Email { get; init; }
-        public string Password { get; init; }
+        [Required] public string Email { get; init; }
+        [Required] public string Password { get; init; }
     }
 }
