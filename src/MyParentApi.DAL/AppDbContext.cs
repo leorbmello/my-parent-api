@@ -6,8 +6,6 @@ namespace MyParentApi.DAL
 {
     public class AppDbContext : DbContext
     {
-        public static DatabaseConfiguration Configuration { get; set; }
-
         private readonly ILogger<AppDbContext> logger;
 
         public virtual DbSet<ApiUser> Users { get; set; }
