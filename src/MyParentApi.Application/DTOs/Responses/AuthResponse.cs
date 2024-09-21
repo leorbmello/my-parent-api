@@ -2,7 +2,7 @@
 {
     public record AuthResponse
     {
-        public AuthResponse(int errorCode, string token)
+        public AuthResponse(int errorCode, string token = null)
         {
             ErrorCode = errorCode;
             Token = token;

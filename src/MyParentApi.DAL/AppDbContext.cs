@@ -10,9 +10,6 @@ namespace MyParentApi.DAL
 
         public virtual DbSet<ApiUser> Users { get; set; }
         public virtual DbSet<ApiRole> Roles { get; set; }
-        public virtual DbSet<ApiArea> Areas { get; set; }
-        public virtual DbSet<ApiPermission> Permissions { get; set; }
-        public virtual DbSet<ApiRolePermission> RolePermissions { get; set; }
         public virtual DbSet<SysLogOper> SysLogOpers { get; set; }
         public virtual DbSet<UserLogOper> UserLogOpers { get; set; }
                 
@@ -26,28 +23,18 @@ namespace MyParentApi.DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ApiArea>()
-                .HasMany(a => a.RolePermissions)
-                .WithOne(rp => rp.Area)
-                .HasForeignKey(rp => rp.AreaId);
-
-            modelBuilder.Entity<ApiRole>()
-                .HasMany(r => r.RolePermissions)
-                .WithOne(rp => rp.Role)
-                .HasForeignKey(rp => rp.RoleId);
-
-            modelBuilder.Entity<ApiUser>()
-                .HasMany(u => u.UserRoles)
-                .WithOne(ur => ur.User)
-                .HasForeignKey(ur => ur.UserId);
-
-            modelBuilder.Entity<ApiRole>()
-                .HasMany(r => r.UserRoles)
-                .WithOne(ur => ur.Role)
-                .HasForeignKey(ur => ur.RoleId);
-
             modelBuilder.Entity<ApiUserRole>()
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            modelBuilder.Entity<ApiUserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId);
+
+            modelBuilder.Entity<ApiUserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId);
         }
 
         public async Task<bool> CreateAsync<T>(T entity, CancellationToken cancellationToken = default)

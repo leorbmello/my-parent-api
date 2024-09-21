@@ -8,8 +8,8 @@ namespace MyParentApi.Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService authService;
         private readonly ILogger<AuthController> logger;
+        private readonly IAuthService authService;
 
         public AuthController(
             ILogger<AuthController> logger,
@@ -31,12 +31,12 @@ namespace MyParentApi.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("logout")]
+        /*[HttpPost("logout")]
         public IActionResult Logout()
         {
             var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
             authService.Logout(new AuthRefreshRequest(token));            
             return Ok("Logout bem-sucedido");
-        }
+        }*/
     }
 }

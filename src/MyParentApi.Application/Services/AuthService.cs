@@ -28,7 +28,7 @@ namespace MyParentApi.Application.Services
                 var user = context.Users.FirstOrDefault(x => x.Email.Equals(request.Email));
                 if (user == null || !ValidatePassword(request.Password, user.PasswordHash))
                 {
-                    return new AuthResponse(SystemErrorCode_InvalidCredentials, null);
+                    return new AuthResponse(SystemErrorCode_InvalidCredentials);
                 }
 
                 return new AuthResponse(SystemErrorCode_LoginOk, tokenService.GenerateToken(user.Email));
@@ -36,7 +36,7 @@ namespace MyParentApi.Application.Services
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
-                return new AuthResponse(SystemErrorCode_InvalidCredentials, null);
+                return new AuthResponse(SystemErrorCode_InvalidCredentials);
             }
         }
 

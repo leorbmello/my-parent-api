@@ -9,6 +9,5 @@ namespace MyParentApi.DAL.Entities
         public string Name { get; set; }
 
         public ICollection<ApiUserRole> UserRoles { get; set; }
-        public ICollection<ApiRolePermission> RolePermissions { get; set; }
     }
 }

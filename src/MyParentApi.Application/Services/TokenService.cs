@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MyParentApi.Application.Interfaces;
-using MyParentApi.DAL;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -28,7 +28,7 @@ namespace MyParentApi.Application.Services
                 .Include(x => x.UserRoles)
                 .ThenInclude(x => x.Role)
                 .FirstOrDefault(x => x.Email.Equals(email));
-
+            
             if (user == null)
             {
                 throw new UnauthorizedAccessException("Credenciais inválidas!");
@@ -40,21 +40,20 @@ namespace MyParentApi.Application.Services
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
+            }; 
+
+            claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
 
             // adicionar as roles como claims para serem reconhecidas
-            foreach(var userRole in user.UserRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
-            }
-
+            //claims.AddRange(user.UserRoles.Select(role => new Claim(ClaimTypes.Role, role.Role.Name)));
+            var expiration = DateTime.UtcNow.AddHours(23);
             var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
+                issuer: null,
+                audience: null,
                 claims: claims,
-                expires: DateTime.Now.AddHours(double.Parse(jwtSettings["ExpiryInHours"])),
+                expires: expiration,
                 signingCredentials: creds
             );
 
