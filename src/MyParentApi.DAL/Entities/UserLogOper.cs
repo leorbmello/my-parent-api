@@ -7,8 +7,8 @@ namespace MyParentApi.DAL.Entities
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string Operacao { get; set; }
+        public string Operation { get; set; }
         public string JsonText { get; set; }
-        public DateTime Data { get; set; }
+        public DateTime Date { get; set; }
     }
 }

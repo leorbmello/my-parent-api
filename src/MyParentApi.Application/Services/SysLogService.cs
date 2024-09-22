@@ -24,9 +24,9 @@ namespace MyParentApi.Application.Services
                 await context.CreateAsync(new UserLogOper()
                 {
                     UserId = userId,
-                    Operacao = operation,
+                    Operation = operation,
                     JsonText = data,
-                    Data = DateTime.Now
+                    Date = DateTime.Now
                 });
             }
             catch (Exception ex)
@@ -42,10 +42,10 @@ namespace MyParentApi.Application.Services
                 await context.CreateAsync(new SysLogOper()
                 {
                     UserId = userId,
-                    Operacao = operation,
+                    Operation = operation,
                     JsonText = data,
                     ErrorText = exception,
-                    Data = DateTime.Now
+                    Date = DateTime.Now
                 });
             }
             catch (Exception ex)

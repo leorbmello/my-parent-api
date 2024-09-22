@@ -5,9 +5,9 @@ namespace MyParentApi.Application.Interfaces
 {
     public interface IAuthService
     {
-        AuthResponse Authenticate(AuthRequest request);
+        Task<AuthResponse> AuthUserAsync(AuthRequest request);
         Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request);
+        Task<GenericResponse> RecoveryPasswordAsync(PasswordRecoveryRequest request);
         void Logout(AuthRefreshRequest request);
-        bool CheckPassword(string password, string passwordHash, string salt);
     }
 }

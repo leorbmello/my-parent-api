@@ -2,6 +2,7 @@
 using Org.BouncyCastle.Crypto.Digests;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MyParentApi.Application.Services
 {
@@ -23,6 +24,17 @@ namespace MyParentApi.Application.Services
                        ? version >= 0 && version <= 2 ? PasswordVerificationResult.Success :
                                                         PasswordVerificationResult.SuccessRehashNeeded
                        : PasswordVerificationResult.Failed;
+        }
+
+        public static bool IsValidPassword(string password, int minLength = 8)
+        {
+            if (string.IsNullOrEmpty(password) || password.Length < minLength)
+                return false;
+
+            string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{4,}$";
+            var regex = new Regex(pattern);
+
+            return regex.IsMatch(password);
         }
 
         public static string WhirlpoolHashOnce(string message)

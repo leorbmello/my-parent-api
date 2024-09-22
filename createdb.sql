@@ -1,0 +1,100 @@
+USE [myapi_new]
+GO
+
+CREATE TABLE Users (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Email NVARCHAR(255) NOT NULL,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Salt NVARCHAR(255) NOT NULL,
+    Name NVARCHAR(255) NOT NULL,
+    Type TINYINT NOT NULL,
+    Status TINYINT NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    ModifiedAt DATETIME NULL,
+    CONSTRAINT UC_Users_Email UNIQUE (Email)
+);
+
+CREATE TABLE UserInfo (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    FirstName NVARCHAR(255) NOT NULL,
+    LastName NVARCHAR(255) NOT NULL,
+    BirthDate DATETIME NOT NULL,
+    Gender TINYINT NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    ChangedAt DATETIME NULL
+);
+
+CREATE TABLE SysLogOper (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT NOT NULL,
+    Operation NVARCHAR(255) NOT NULL,
+    JsonText NVARCHAR(MAX) NOT NULL,
+    ErrorText NVARCHAR(MAX) NULL,
+    Date DATETIME NOT NULL,
+    CONSTRAINT FK_SysLogOper_User FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+
+CREATE TABLE UserLogOper (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT NOT NULL,
+    Operation NVARCHAR(255) NOT NULL,
+    JsonText NVARCHAR(MAX) NOT NULL,
+    Date DATETIME NOT NULL,
+    CONSTRAINT FK_UserLogOper_User FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+
+CREATE TABLE Roles (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(255) NOT NULL
+);
+
+CREATE TABLE UserRoles (
+    UserId INT NOT NULL,
+    RoleId INT NOT NULL,
+    CONSTRAINT PK_UserRoles PRIMARY KEY (UserId, RoleId),
+    CONSTRAINT FK_UserRoles_User FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT FK_UserRoles_Role FOREIGN KEY (RoleId) REFERENCES Roles(Id)
+);
+CREATE TABLE Families (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(255) NOT NULL,
+    UserCreatorId INT NOT NULL,
+    Status TINYINT NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    ModifiedAt DATETIME NULL,
+    CONSTRAINT FK_Families_User FOREIGN KEY (UserCreatorId) REFERENCES Users(Id)
+);
+
+CREATE TABLE FamilyUsers (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    FamilyId INT NOT NULL,
+    UserId INT NOT NULL,
+    CONSTRAINT FK_FamilyUsers_Family FOREIGN KEY (FamilyId) REFERENCES Families(Id),
+    CONSTRAINT FK_FamilyUsers_User FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+
+CREATE TABLE Notifications (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    SenderId INT NOT NULL,
+    UserId INT NOT NULL,
+    Title NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(MAX) NOT NULL,
+    Content NVARCHAR(MAX) NOT NULL,
+    Type TINYINT NOT NULL,
+    Status TINYINT NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    ReadAt DATETIME NULL,
+    CONSTRAINT FK_Notifications_Sender FOREIGN KEY (SenderId) REFERENCES Users(Id),
+    CONSTRAINT FK_Notifications_User FOREIGN KEY (UserId) REFERENCES Users(Id)
+);
+
+CREATE TABLE UserRecovery (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Email NVARCHAR(255) NOT NULL,
+    Token NVARCHAR(255) NOT NULL
+);
+
+INSERT INTO [dbo].[Roles] ([Name]) VALUES ('Admin')
+INSERT INTO [dbo].[Roles] ([Name]) VALUES ('User')
+INSERT INTO [dbo].[Roles] ([Name]) VALUES ('Children')
+GO

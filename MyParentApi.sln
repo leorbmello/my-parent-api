@@ -5,13 +5,18 @@ VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyParentApi.Api", "src\MyParentApi.Api\MyParentApi.Api.csproj", "{78A02220-7C24-4518-A508-34999ADEDA6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyParentApi.Shared", "src\MyParentApi.Shared\MyParentApi.Shared.csproj", "{C5061880-9424-4223-A15E-79EAD096B738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyParentApi.Shared", "src\MyParentApi.Shared\MyParentApi.Shared.csproj", "{C5061880-9424-4223-A15E-79EAD096B738}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyParentApi.IoC", "src\MyParentApi.IoC\MyParentApi.IoC.csproj", "{2D0E0ABD-ADF3-4AC9-AA72-6578068D5B3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyParentApi.IoC", "src\MyParentApi.IoC\MyParentApi.IoC.csproj", "{2D0E0ABD-ADF3-4AC9-AA72-6578068D5B3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyParentApi.DAL", "src\MyParentApi.DAL\MyParentApi.DAL.csproj", "{88CDFC93-9404-4790-B62C-82AC31B2E8C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyParentApi.DAL", "src\MyParentApi.DAL\MyParentApi.DAL.csproj", "{88CDFC93-9404-4790-B62C-82AC31B2E8C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyParentApi.Application", "src\MyParentApi.Application\MyParentApi.Application.csproj", "{FF7CA3A7-1C7B-4BFE-B538-EC5CBE0568F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyParentApi.Application", "src\MyParentApi.Application\MyParentApi.Application.csproj", "{FF7CA3A7-1C7B-4BFE-B538-EC5CBE0568F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Itens de Solução", "Itens de Solução", "{98169249-D05C-4F02-883F-7D6C6F40EBC1}"
+	ProjectSection(SolutionItems) = preProject
+		createdb.sql = createdb.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

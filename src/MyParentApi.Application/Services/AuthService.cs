@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using MyParentApi.Application.DTOs.Requests;
 using MyParentApi.Application.DTOs.Responses;
 using MyParentApi.Application.Interfaces;
 using MyParentApi.Application.Managers;
 using MyParentApi.DAL.Entities;
+using MyParentApi.DAL.Interfaces;
 using System.Text.Json;
 
 namespace MyParentApi.Application.Services
@@ -15,77 +15,115 @@ namespace MyParentApi.Application.Services
 
         private readonly ISysLogService sysLogService;
         private readonly ITokenService tokenService;
-        private readonly AppDbContext context;
+        private readonly IUserRepository userRepository;
 
         public AuthService(
             ILogger<AuthService> logger,
             ITokenService tokenService, 
             ISysLogService sysLog,
-            AppDbContext context)
+            IUserRepository userRepository)
         {
             this.logger = logger;
             this.tokenService = tokenService;
-            this.context = context;
             this.sysLogService = sysLog;
+            this.userRepository = userRepository;
         }
 
-        public bool CheckPassword(string password, string passwordHash, string salt)
+        private bool CheckPassword(string password, string passwordHash, string salt)
         {
             var chkPassword = WhirlPoolHashService.HashPassword(password, salt);
             return chkPassword.Equals(passwordHash);
         }
 
-        public AuthResponse Authenticate(AuthRequest request)
+        public async Task<AuthResponse> AuthUserAsync(AuthRequest request)
         {
             try
             {
-                var user = context.Users.FirstOrDefault(x => x.Email.Equals(request.Email));
+                var user = await userRepository.GetUserAsync(request.Email);
                 if (user == null || !CheckPassword(request.Password, user.PasswordHash, user.Salt))
                 {
                     return new AuthResponse(SystemErrorCode_InvalidCredentials);
                 }
 
-                return new AuthResponse(SystemErrorCode_LoginOk, tokenService.GenerateToken(user.Email));
+                return new AuthResponse(SystemErrorCode_LoginOk, tokenService.GenerateToken(user));
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
-                return new AuthResponse(SystemErrorCode_InvalidCredentials);
+                throw new Exception(ex.ToString());
             }
         }
 
         public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
         {
-            var user = await context.Users.FirstOrDefaultAsync(x=>x.Email.Equals(request.Email));
-            if (user != null)
+            try
             {
-                return new CreateUserResponse();
+                var user = await userRepository.GetUserAsync(request.Email);
+                if (user != null)
+                {
+                    return new CreateUserResponse();
+                }
+
+                byte roleTypeId = RoleTypeUser;
+                if (request.RoleType != 0)
+                {
+                    roleTypeId = request.RoleType;
+                }
+
+                // Gerar seed de senha e armazenar junto com a senha cryptografada
+                var salt = WhirlPoolHashService.GenerateSalt();
+                var hashedPass = WhirlPoolHashService.HashPassword(request.Password, salt);
+                var dbUser = new ApiUser()
+                {
+                    Email = request.Email,
+                    PasswordHash = hashedPass,
+                    Salt = salt,
+                    CreatedAt = DateTime.Now,
+                    Name = request.Name,
+                    Status = StatusActive,
+                    Type = roleTypeId,
+                };
+
+                var newUser = await userRepository.CreateUserAsync(dbUser, roleTypeId);
+                if (newUser == null)
+                {
+                    throw new SystemException("Could not create the user!");
+                }
+
+                await sysLogService.SaveUserLogAsync(dbUser.Id, "New User Create Operation", JsonSerializer.Serialize(dbUser));
+                return new CreateUserResponse(dbUser.Email, dbUser.Name);
             }
-
-            // Gerar seed de senha e armazenar junto com a senha cryptografada
-            var salt = WhirlPoolHashService.GenerateSalt();
-            var hashedPass = WhirlPoolHashService.HashPassword(request.Password, salt);
-            var dbUser = new ApiUser()
+            catch (Exception ex)
             {
-                Email = request.Email,
-                PasswordHash = hashedPass,
-                Salt = salt,
-                DataCriacao = DateTime.Now,
-                DataAlteracao = DateTime.Now,
-                DataNascimento = DateTime.Now,
-                Nome = request.Name,
-                Status = StatusActive,
-                Tipo = RoleTypeUser,
-            };
-
-            // Tu é burro e fez merda, falhou aqui.
-            if (!await context.CreateAsync(dbUser))
-            {
-                return new CreateUserResponse();
+                logger.LogError(ex.ToString());
+                throw new SystemException(ex.ToString());
             }
+        }
 
-            await sysLogService.SaveUserLogAsync(dbUser.Id, "New User Create Operation", JsonSerializer.Serialize(dbUser));
-            return new CreateUserResponse(dbUser.Email, dbUser.Nome, dbUser.PasswordHash, dbUser.Salt);
+        public async Task<GenericResponse> RecoveryPasswordAsync(PasswordRecoveryRequest request)
+        {
+            try
+            {
+                var user = await userRepository.GetUserAsync(request.Email);
+                if (user == null)
+                {
+                    return new GenericResponse("Erro", "Usuário de email não cadastrado!");
+                }
+
+                var token = WhirlPoolHashService.GenerateSalt();
+                if (!await userRepository.CreatePassRecoveryAsync(request.Email, token))
+                {
+                    throw new SystemException("Could not create the recovery request!");
+                }
+
+                await sysLogService.SaveUserLogAsync(user.Id, "Password Recovery Request", $"Email: {request.Email}; Token:{token}");
+                return new GenericResponse("", token);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.ToString());
+                throw new SystemException(ex.ToString());
+            }
         }
 
         public void Logout(AuthRefreshRequest request)

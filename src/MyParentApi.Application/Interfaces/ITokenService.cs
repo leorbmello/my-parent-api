@@ -1,7 +1,9 @@
-﻿namespace MyParentApi.Application.Interfaces
+﻿using MyParentApi.DAL.Entities;
+
+namespace MyParentApi.Application.Interfaces
 {
     public interface ITokenService
     {
-        string GenerateToken(string email);
+        string GenerateToken(ApiUser user);
     }
 }

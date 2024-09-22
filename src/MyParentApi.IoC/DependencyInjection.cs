@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using MyParentApi.Application.Interfaces;
 using MyParentApi.Application.Services;
 using MyParentApi.DAL;
+using MyParentApi.DAL.Interfaces;
+using MyParentApi.DAL.Repositories;
 
 namespace MyParentApi.IoC
 {
@@ -18,7 +20,10 @@ namespace MyParentApi.IoC
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IProfileService, ProfileService>();
             services.AddScoped<ISysLogService, SysLogService>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

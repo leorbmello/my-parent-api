@@ -9,7 +9,11 @@ namespace MyParentApi.DAL
         private readonly ILogger<AppDbContext> logger;
 
         public virtual DbSet<ApiUser> Users { get; set; }
+        public virtual DbSet<ApiUserInfo> UserInfos { get; set; }
+        public virtual DbSet<ApiUserRecovery> UserRecovery { get; set; }
+
         public virtual DbSet<ApiRole> Roles { get; set; }
+
         public virtual DbSet<SysLogOper> SysLogOpers { get; set; }
         public virtual DbSet<UserLogOper> UserLogOpers { get; set; }
                 
@@ -35,6 +39,11 @@ namespace MyParentApi.DAL
                 .HasOne(ur => ur.Role)
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
+
+            modelBuilder.Entity<ApiUser>()
+                .HasOne(u => u.UserInfo)
+                .WithOne(ui => ui.User)
+                .HasForeignKey<ApiUserInfo>(ui => ui.Id);
         }
 
         public async Task<bool> CreateAsync<T>(T entity, CancellationToken cancellationToken = default)

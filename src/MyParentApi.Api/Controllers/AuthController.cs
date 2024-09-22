@@ -8,33 +8,29 @@ namespace MyParentApi.Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly ILogger<AuthController> logger;
         private readonly IAuthService authService;
 
-        public AuthController(
-            ILogger<AuthController> logger,
-            IAuthService authService)
+        public AuthController(IAuthService authService)
         {
-            this.logger = logger;
             this.authService = authService;
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] AuthRequest request)
+        public async Task<IActionResult> LoginAsync([FromBody] AuthRequest request)
         {
-            var result = authService.Authenticate(request);
-            if (string.IsNullOrEmpty(result.Token))
-            {
-                return Unauthorized(result.ErrorCode);
-            }
-
-            return Ok(result);
+            return Ok(await authService.AuthUserAsync(request));
         }
 
         [HttpPost("create-user")]
         public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest request)
         {
             return Ok(await authService.CreateUserAsync(request));
+        }
+
+        [HttpPost("recovery-password")]
+        public async Task<IActionResult> PasswordRecorverAsync([FromBody] PasswordRecoveryRequest request)
+        {
+            return Ok(await authService.RecoveryPasswordAsync(request));
         }
 
         /*[HttpPost("logout")]

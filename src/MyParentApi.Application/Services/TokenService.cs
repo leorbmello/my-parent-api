@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using MyParentApi.Application.Interfaces;
+using MyParentApi.DAL.Entities;
 using System.Security.Claims;
 using System.Text;
 
@@ -21,13 +22,8 @@ namespace MyParentApi.Application.Services
             this.context = context;
         }
 
-        public string GenerateToken(string email)
+        public string GenerateToken(ApiUser user)
         {
-            var user = context.Users
-                .Include(x => x.UserRoles)
-                .ThenInclude(x => x.Role)
-                .FirstOrDefault(x => x.Email.Equals(email));
-            
             if (user == null)
             {
                 throw new UnauthorizedAccessException("Credenciais inválidas!");
