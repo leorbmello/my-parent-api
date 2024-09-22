@@ -8,6 +8,7 @@ namespace MyParentApi.DAL.Entities
         public int Id { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
+        public string Salt { get; set; }
         public string Nome { get; set; }
         public byte Tipo { get; set; }
         public byte Status { get; set; }

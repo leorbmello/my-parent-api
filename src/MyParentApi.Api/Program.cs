@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using MyParentApi.DAL;
 using MyParentApi.IoC;
 using Newtonsoft.Json.Linq;
@@ -16,19 +15,23 @@ namespace MyParentApi.Api
 
             // Adicione a configuração de autenticação JWT
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-            var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateLifetime = false,
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ClockSkew = TimeSpan.Zero // Sem tempo extra para expiração
+                    ClockSkew = TimeSpan.Zero
                 };
                 options.Events = new JwtBearerEvents()
                 {
@@ -36,7 +39,6 @@ namespace MyParentApi.Api
                     {
                         // Skip the default logic.
                         context.HandleResponse();
-
                         var payload = new JObject
                         {
                             ["title"] = "Sessão Expirada",
@@ -51,29 +53,7 @@ namespace MyParentApi.Api
                     }
                 };
             });
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization header using the Bearer scheme.",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Scheme = "bearer",
-                    Type = SecuritySchemeType.Http,
-                    BearerFormat = "JWT"
-                });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-                        },
-                        new List<string>()
-                    }
-                });
-            });
             // Add services to the container.
             builder.Services.AddServicesCollection(builder.Configuration);
             builder.Services.AddAuthorization(options =>
@@ -106,6 +86,7 @@ namespace MyParentApi.Api
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             app.Run();

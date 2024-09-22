@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using MyParentApi.Application.Interfaces;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
@@ -41,23 +40,28 @@ namespace MyParentApi.Application.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            }; 
-
-            claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Email, user.Email));
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email)
+            };
 
             // adicionar as roles como claims para serem reconhecidas
-            //claims.AddRange(user.UserRoles.Select(role => new Claim(ClaimTypes.Role, role.Role.Name)));
-            var expiration = DateTime.UtcNow.AddHours(23);
-            var token = new JwtSecurityToken(
-                issuer: null,
-                audience: null,
-                claims: claims,
-                expires: expiration,
-                signingCredentials: creds
-            );
+            claims.AddRange(user.UserRoles.Select(role => new Claim(ClaimTypes.Role, role.Role.Name)));
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            // Criando a definição de token com JsonWebTokenHandler
+            var tokenHandler = new JsonWebTokenHandler();
+
+            // Parâmetros do token
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = creds
+            };
+
+            // Gerar o token
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return token; // O token retornado tem o formato JWT
         }
     }
 }

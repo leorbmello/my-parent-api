@@ -31,6 +31,12 @@ namespace MyParentApi.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPost("create-user")]
+        public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequest request)
+        {
+            return Ok(await authService.CreateUserAsync(request));
+        }
+
         /*[HttpPost("logout")]
         public IActionResult Logout()
         {
