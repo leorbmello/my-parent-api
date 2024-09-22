@@ -13,5 +13,6 @@ namespace MyParentApi.DAL.Entities
         public DateTime? ModifiedAt { get; set; }
 
         public ApiUser User { get; set; }
+        public List<ApiFamilyUser> FamilyMembers { get; set; }
     }
 }

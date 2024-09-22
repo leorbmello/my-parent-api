@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyParentApi.Application.DTOs.Requests;
+using MyParentApi.Application.DTOs.Requests.Auth;
+using MyParentApi.Application.DTOs.Requests.Profile;
+using MyParentApi.Application.DTOs.Requests.Users;
 using MyParentApi.Application.Interfaces;
 
 namespace MyParentApi.Api.Controllers

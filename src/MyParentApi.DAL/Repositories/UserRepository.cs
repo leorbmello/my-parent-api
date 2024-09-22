@@ -1,8 +1,6 @@
-﻿using Azure.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MyParentApi.DAL.Entities;
 using MyParentApi.DAL.Interfaces;
-using System.Text.Json;
 
 namespace MyParentApi.DAL.Repositories
 {

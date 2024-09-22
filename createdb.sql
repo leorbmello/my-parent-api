@@ -77,6 +77,7 @@ CREATE TABLE Notifications (
     Id INT PRIMARY KEY IDENTITY(1,1),
     SenderId INT NOT NULL,
     UserId INT NOT NULL,
+    FamilyId INT NOT NULL,
     Title NVARCHAR(255) NOT NULL,
     Description NVARCHAR(MAX) NOT NULL,
     Content NVARCHAR(MAX) NOT NULL,

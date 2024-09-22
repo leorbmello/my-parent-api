@@ -7,7 +7,6 @@
             StatusInactive = 2,
             StatusBanned = 3;
 
-
         public const byte
             RoleTypeAdmin = 1,
             RoleTypeUser = 2,

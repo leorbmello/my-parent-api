@@ -1,4 +1,7 @@
 ﻿using MyParentApi.Application.DTOs.Requests;
+using MyParentApi.Application.DTOs.Requests.Auth;
+using MyParentApi.Application.DTOs.Requests.Profile;
+using MyParentApi.Application.DTOs.Requests.Users;
 using MyParentApi.Application.DTOs.Responses;
 
 namespace MyParentApi.Application.Interfaces

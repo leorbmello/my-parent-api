@@ -8,6 +8,7 @@ namespace MyParentApi.DAL.Entities
         public int Id { get; set; }
         public int SenderId { get; set; }
         public int UserId { get; set; }
+        public int FamilyId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Content { get; set; }

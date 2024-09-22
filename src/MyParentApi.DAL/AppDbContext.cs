@@ -12,8 +12,12 @@ namespace MyParentApi.DAL
         public virtual DbSet<ApiUserInfo> UserInfos { get; set; }
         public virtual DbSet<ApiUserRecovery> UserRecovery { get; set; }
 
+        public virtual DbSet<ApiFamily> Families { get; set; }
+        public virtual DbSet<ApiFamilyUser> FamilyUsers { get; set; }
+
         public virtual DbSet<ApiRole> Roles { get; set; }
 
+        public virtual DbSet<ApiNotification> Notifications { get; set; }
         public virtual DbSet<SysLogOper> SysLogOpers { get; set; }
         public virtual DbSet<UserLogOper> UserLogOpers { get; set; }
                 

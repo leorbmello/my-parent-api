@@ -24,6 +24,8 @@ namespace MyParentApi.IoC
             services.AddScoped<ISysLogService, SysLogService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IFamilyRepository, FamilyRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
 
             return services;
         }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MyParentApi.Application.DTOs.Requests
+namespace MyParentApi.Application.DTOs.Requests.Auth
 {
     public record AuthRequest
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using MyParentApi.Application.DTOs.Requests;
+using MyParentApi.Application.DTOs.Requests.Profile;
 using MyParentApi.Application.DTOs.Responses;
 using MyParentApi.Application.Interfaces;
 using System.Text.Json;
