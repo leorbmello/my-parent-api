@@ -23,12 +23,12 @@ namespace MyParentApi.DAL.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ICollection<ApiNotification>> GetNotesByTypeAsync(int userId, byte type)
+        public async Task<ICollection<ApiNotification>> GetNotesByTypeAsync(int userId, byte noteType = NoteTypeNormal)
         {
             return await context.Notifications
                 .Include(x => x.User)
                 .Include(x => x.Sender)
-                .Where(x => x.UserId == userId && x.Type == type)
+                .Where(x => x.UserId == userId && x.Type == noteType)
                 .ToListAsync();
         }
 

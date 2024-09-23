@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using MyParentApi.DAL;
 using MyParentApi.IoC;
 using Newtonsoft.Json.Linq;
 using System.Text;
