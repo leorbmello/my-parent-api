@@ -44,6 +44,7 @@ namespace MyParentApi.DAL.Repositories
                     Description = description,
                     Content = content,
                     Status = StatusNoteNew,
+                    Type = invite ? NoteTypeInvite : NoteTypeNormal,
                     CreatedAt = DateTime.Now,
                 };
 
@@ -75,7 +76,7 @@ namespace MyParentApi.DAL.Repositories
             }
         }
 
-        public async Task<bool> DeleteNoteAsync(int notificationId)
+        public async Task<bool> DeleteNoteAsync(int notificationId, byte noteType = NoteTypeNormal)
         {
             try
             {

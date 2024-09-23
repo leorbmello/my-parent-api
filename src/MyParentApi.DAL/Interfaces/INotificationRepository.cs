@@ -8,7 +8,7 @@ namespace MyParentApi.DAL.Interfaces
         Task<ICollection<ApiNotification>> GetNotesByTypeAsync(int userId, byte type);
         Task<bool> CreateNoteAsync(ApiUser sender, int targetId, string title, string description, string content, bool invite = false);
         Task<bool> ReadNoteAsync(int notificationId);
-        Task<bool> DeleteNoteAsync(int notificationId);
+        Task<bool> DeleteNoteAsync(int notificationId, byte noteType = NoteTypeNormal);
         Task<bool> DeleteAllNotesAsync(int userId);
     }
 }

@@ -43,18 +43,17 @@ namespace MyParentApi.Application.Services
             try
             {
                 var user = await userRepository.GetUserAsync(request.Email);
-                if (user == null || !CheckPassword(request.Password, user.PasswordHash, user.Salt))
+                if (user != null && CheckPassword(request.Password, user.PasswordHash, user.Salt))
                 {
-                    return new AuthResponse(SystemErrorCode_InvalidCredentials, StrAuthInvalid);
+                    return new AuthResponse(SystemErrorCode_LoginOk, tokenService.GenerateToken(user));
                 }
-
-                return new AuthResponse(SystemErrorCode_LoginOk, tokenService.GenerateToken(user));
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
-                throw new Exception(ex.ToString());
             }
+
+            return new AuthResponse(SystemErrorCode_InvalidCredentials, StrAuthInvalid);
         }
 
         public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)

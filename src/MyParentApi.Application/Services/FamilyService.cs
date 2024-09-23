@@ -44,7 +44,7 @@ namespace MyParentApi.Application.Services
         {
             try
             {
-                var notes = await notificationRepository.GetNotesByTypeAsync(user.Id, StatusNoteInvite);
+                var notes = await notificationRepository.GetNotesByTypeAsync(user.Id, NoteTypeInvite);
                 if (notes.Count < 1)
                 {
                     throw new Exception("Não há nenhum invite para entrar em uma família!");

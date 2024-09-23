@@ -4,7 +4,10 @@
     {
         public const byte
             StatusNoteNew = 1,
-            StatusNoteRead = 2,
-            StatusNoteInvite = 3;
+            StatusNoteRead = 2;
+
+        public const byte
+            NoteTypeNormal = 1,
+            NoteTypeInvite = 2;
     }
 }
