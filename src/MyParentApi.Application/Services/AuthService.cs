@@ -64,7 +64,7 @@ namespace MyParentApi.Application.Services
                 var user = await userRepository.GetUserAsync(request.Email);
                 if (user != null)
                 {
-                    return new CreateUserResponse();
+                    throw new RegistrationException(GetType().Name, string.Format(StrUserCannotCreate, request.Email));
                 }
 
                 byte roleTypeId = RoleTypeUser;
@@ -90,7 +90,7 @@ namespace MyParentApi.Application.Services
                 var newUser = await userRepository.CreateUserAsync(dbUser, roleTypeId);
                 if (newUser == null)
                 {
-                    throw new SystemException(string.Format(StrUserCannotCreate, request.Email));
+                    throw new RegistrationException(GetType().Name, string.Format(StrUserCannotCreate, request.Email));
                 }
 
                 await sysLogService.SaveUserLogAsync(dbUser.Id, StrOperationNewUser, JsonSerializer.Serialize(dbUser));
@@ -99,7 +99,7 @@ namespace MyParentApi.Application.Services
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
-                throw new SystemException(ex.ToString());
+                return null;
             }
         }
 
@@ -116,16 +116,16 @@ namespace MyParentApi.Application.Services
                 var token = WhirlPoolHashService.GenerateSalt();
                 if (!await userRepository.CreatePassRecoveryAsync(request.Email, token))
                 {
-                    throw new SystemException(StrRecoveryError);
+                    throw new RegistrationException(GetType().Name, StrRecoveryError);
                 }
 
                 await sysLogService.SaveUserLogAsync(user.Id, StrOperationRecoveryRequest, $"Email: {request.Email}; Token:{token}");
-                return new GenericResponse(StrTitleNone, token);
+                return new GenericResponse(StrTitleSuccess, token);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
-                throw new SystemException(ex.ToString());
+                return new GenericResponse(StrTitleError, ex.ToString());
             }
         }
 

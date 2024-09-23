@@ -147,11 +147,32 @@
   <data name="StrOperationNewUser" xml:space="preserve">
     <value>New User Registered</value>
   </data>
+  <data name="StrOperationPasswordChange" xml:space="preserve">
+    <value>Password Change</value>
+  </data>
   <data name="StrOperationRecoveryRequest" xml:space="preserve">
     <value>Password Recovery Requested</value>
   </data>
+  <data name="StrPasswordChangeError" xml:space="preserve">
+    <value>Não foi possível alterar a senha, contate um administrador!</value>
+  </data>
+  <data name="StrPasswordChangeNotMatch" xml:space="preserve">
+    <value>As senhas informadas não coincidem.</value>
+  </data>
+  <data name="StrPasswordChangeSuccess" xml:space="preserve">
+    <value>Senha alterada com sucesso!</value>
+  </data>
+  <data name="StrPasswordSecurityLow" xml:space="preserve">
+    <value>A senha não atinge os critérios válidos de segurança!</value>
+  </data>
   <data name="StrRecoveryError" xml:space="preserve">
     <value>Ocorreu um erro durante a criação de uma requisição de recuperação de senha.</value>
+  </data>
+  <data name="StrRecoveryInvalid" xml:space="preserve">
+    <value>Método de recuperação de senha inválido!</value>
+  </data>
+  <data name="StrRecoveryInvalidToken" xml:space="preserve">
+    <value>O token informado para recuperação é inválido.</value>
   </data>
   <data name="StrRecoverySent" xml:space="preserve">
     <value>O email de recuperação foi encaminhado para {0}.</value>
@@ -168,6 +189,9 @@
   <data name="StrTitleNone" xml:space="preserve">
     <value />
   </data>
+  <data name="StrTitleSuccess" xml:space="preserve">
+    <value>Sucesso</value>
+  </data>
   <data name="StrTitleWarning" xml:space="preserve">
     <value>Aviso</value>
   </data>
@@ -179,5 +203,8 @@
   </data>
   <data name="StrUserHasFamily" xml:space="preserve">
     <value>{0} já faz parte de uma família e não pode ser convidado.</value>
+  </data>
+  <data name="StrUserPasswordNotMatch" xml:space="preserve">
+    <value>A senha informada não confere.</value>
   </data>
 </root>

@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using MyParentApi.Application.DTOs.Requests.Profile;
 using MyParentApi.Application.DTOs.Responses;
 using MyParentApi.Application.Interfaces;
+using MyParentApi.DAL.Interfaces;
 using System.Text.Json;
 
 namespace MyParentApi.Application.Services
@@ -12,15 +12,16 @@ namespace MyParentApi.Application.Services
         private readonly ILogger<ProfileService> logger;
 
         private readonly ISysLogService sysLogService;
-        private readonly AppDbContext context;
+        private readonly IUserRepository userRepository;
 
         public ProfileService(
             ILogger<ProfileService> logger,
             ISysLogService sysLogService,
+            IUserRepository userRepository,
             AppDbContext context) 
         {
             this.logger = logger;
-            this.context = context;
+            this.userRepository = userRepository;
             this.sysLogService = sysLogService;
         }
 
@@ -28,96 +29,96 @@ namespace MyParentApi.Application.Services
         {
             try
             {
-                var user = await context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+                var user = await userRepository.GetUserAsync(request.Email);
                 if (user == null)
                 {
-                    return new GenericResponse("Erro", "Usuário inválido!");
+                    return new GenericResponse(StrTitleError, StrAuthInvalid);
                 }
 
                 var result = WhirlPoolHashService.CheckPassword(request.OldPassword, user.PasswordHash, user.Salt);
                 if (result != Microsoft.AspNetCore.Identity.PasswordVerificationResult.Success)
                 {
-                    return new GenericResponse("Erro", "Senhas não coincidem!");
+                    return new GenericResponse(StrTitleError, StrUserPasswordNotMatch);
                 }
 
                 if (!WhirlPoolHashService.IsValidPassword(request.NewPassword))
                 {
-                    return new GenericResponse("Erro", "A senha não atinge os critérios válidos de segurança!");
+                    return new GenericResponse(StrTitleError, StrPasswordSecurityLow);
                 }
 
                 if (!request.NewPassword.Equals(request.NewPasswordConfirm))
                 {
-                    return new GenericResponse("Erro", "Falha na confirmação de nova senha!");
+                    return new GenericResponse(StrTitleError, StrPasswordChangeNotMatch);
                 }
 
                 var newSalt = WhirlPoolHashService.GenerateSalt();
                 var newPass = WhirlPoolHashService.HashPassword(request.NewPassword, newSalt);
                 user.PasswordHash = newPass;
                 user.Salt = newSalt;
-                if (await context.UpdateAsync(user))
+                if (await userRepository.UpdateUserAsync(user))
                 {
-                    await sysLogService.SaveUserLogAsync(user.Id, "Password Change", JsonSerializer.Serialize(user));
-                    return new GenericResponse("Aviso", "Senha alterada com sucesso!");
+                    await sysLogService.SaveUserLogAsync(user.Id, StrOperationPasswordChange, JsonSerializer.Serialize(user));
+                    return new GenericResponse(StrTitleAdvertise, StrPasswordChangeSuccess);
                 }
-
-                return new GenericResponse("Erro", "Não foi possível alterar a senha, contate um administrador!");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
-                throw new SystemException(ex.ToString());
+                throw new ProfileException(GetType().Name, ex);
             }
+
+            return new GenericResponse(StrTitleError, StrPasswordChangeError);
         }
 
         public async Task<GenericResponse> ChangePasswordByTokenAsync(PasswordChangeRequest request)
         {
             try
             {
-                var user = await context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+                var user = await userRepository.GetUserAsync(request.Email);
                 if (user == null)
                 {
-                    return new GenericResponse("Erro", "Usuário inválido!");
+                    return new GenericResponse(StrTitleError, StrAuthInvalid);
                 }
 
-                var recoveryRequest = await context.UserRecovery.FirstOrDefaultAsync(x => x.Email == request.Email);
+                var recoveryRequest = await userRepository.GetRecoveryKeyAsync(request.Email);
                 if (recoveryRequest == null)
                 {
-                    return new GenericResponse("Erro", "Modo de recuperação inválido!");
+                    return new GenericResponse(StrTitleAdvertise, StrRecoveryInvalid);
                 }
 
-                if (!recoveryRequest.Token.Equals(request.OldPassword))
+                if (!recoveryRequest.Equals(request.OldPassword))
                 {
-                    return new GenericResponse("Erro", "Token fornecido para recuperação é inválido!");
+                    return new GenericResponse(StrTitleAdvertise, StrRecoveryInvalidToken);
                 }
 
                 if (!WhirlPoolHashService.IsValidPassword(request.NewPassword))
                 {
-                    return new GenericResponse("Erro", "A senha não atinge os critérios válidos de segurança!");
+                    return new GenericResponse(StrTitleError, StrPasswordSecurityLow);
                 }
 
                 if (!request.NewPassword.Equals(request.NewPasswordConfirm))
                 {
-                    return new GenericResponse("Erro", "Falha na confirmação de nova senha!");
+                    return new GenericResponse(StrTitleError, StrPasswordChangeNotMatch);
                 }
 
                 var newSalt = WhirlPoolHashService.GenerateSalt();
                 var newPass = WhirlPoolHashService.HashPassword(request.NewPassword, newSalt);
                 user.PasswordHash = newPass;
                 user.Salt = newSalt;
-                if (await context.UpdateAsync(user))
+                if (await userRepository.UpdateUserAsync(user))
                 {
-                    await context.DeleteAsync(recoveryRequest);
-                    await sysLogService.SaveUserLogAsync(user.Id, "Password Change", JsonSerializer.Serialize(user));
-                    return new GenericResponse("Aviso", "Senha alterada com sucesso!");
+                    await userRepository.DeletePassRecoveryAsync(recoveryRequest);
+                    await sysLogService.SaveUserLogAsync(user.Id, StrOperationPasswordChange, JsonSerializer.Serialize(user));
+                    return new GenericResponse(StrTitleAdvertise, StrPasswordChangeSuccess);
                 }
-
-                return new GenericResponse("Erro", "Não foi possível alterar a senha, contate um administrador!");
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
-                throw new SystemException(ex.ToString());
+                throw new ProfileException(GetType().Name, ex);
             }
+
+            return new GenericResponse(StrTitleError, StrPasswordChangeError);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyParentApi.DAL.Entities;
 using MyParentApi.DAL.Interfaces;
+using MyParentApi.Shared.Helpers.Exceptions;
 
 namespace MyParentApi.DAL.Repositories
 {
@@ -51,92 +52,134 @@ namespace MyParentApi.DAL.Repositories
 
         public async Task<ApiFamily> CreateFamilyAsync(ApiUser user, string name)
         {
-            var family = new ApiFamily()
+            try
             {
-                Name = name,
-                UserCreatorId = user.Id,
-                Status = StatusActive,
-                CreatedAt = DateTime.Now,
-            };
-
-            if (await context.CreateAsync(family))
-            {
-                var familyUser = new ApiFamilyUser()
+                var family = new ApiFamily()
                 {
-                    FamilyId = family.Id,
-                    UserId = user.Id,
+                    Name = name,
+                    UserCreatorId = user.Id,
+                    Status = StatusActive,
+                    CreatedAt = DateTime.Now,
                 };
 
-                await context.CreateAsync(familyUser);
-                return family;
-            }
+                if (await context.CreateAsync(family))
+                {
+                    var familyUser = new ApiFamilyUser()
+                    {
+                        FamilyId = family.Id,
+                        UserId = user.Id,
+                    };
 
-            return null;
+                    await context.CreateAsync(familyUser);
+                    return family;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException(GetType().Name, ex);
+            }
         }
 
         public async Task<bool> UpdateFamilyAsync(ApiFamily family)
         {
-            family.ModifiedAt = DateTime.Now;
-            return await context.UpdateAsync(family);
+            try
+            {
+                family.ModifiedAt = DateTime.Now;
+                return await context.UpdateAsync(family);
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException(GetType().Name, ex);
+            }
         }
 
         public async Task<bool> JoinFamilyAsync(int familyId, int userId)
         {
-            var familyUser = new ApiFamilyUser()
+            try
             {
-                FamilyId = familyId,
-                UserId = userId,
-            };
+                var familyUser = new ApiFamilyUser()
+                {
+                    FamilyId = familyId,
+                    UserId = userId,
+                };
 
-            return await context.CreateAsync(familyUser);
+                return await context.CreateAsync(familyUser);
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException(GetType().Name, ex);
+            }
         }
 
         public async Task<bool> DeleteMemberAsync(int id)
         {
-            var member = await context.FamilyUsers.FirstOrDefaultAsync(x => x.UserId == id);
-            if (member == null)
+            try
             {
-                return false;
-            }
+                var member = await context.FamilyUsers.FirstOrDefaultAsync(x => x.UserId == id);
+                if (member == null)
+                {
+                    return false;
+                }
 
-            return await context.DeleteAsync(member);
+                return await context.DeleteAsync(member);
+            }
+            catch (Exception ex)
+            {
+                throw new DatabaseException(GetType().Name, ex);
+            }
         }
 
         public async Task<bool> DeleteFamilyAsync(int id)
         {
-            var family = await GetFamilyByIdAsync(id);
-            if (family == null)
+            try
             {
-                return false;
-            }
+                var family = await GetFamilyByIdAsync(id);
+                if (family == null)
+                {
+                    return false;
+                }
 
-            if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
+                if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
+                {
+                    await context.DeleteRangeAsync(family.FamilyMembers);
+                }
+
+                return await context.DeleteAsync(family);
+            }
+            catch (Exception ex)
             {
-                await context.DeleteRangeAsync(family.FamilyMembers);
+                throw new DatabaseException(GetType().Name, ex);
             }
-
-            return await context.DeleteAsync(family);
         }
 
         public async Task<bool> DeleteFamilyByCreatorIdAsync(int id)
         {
-            var family = await GetFamilyByUserIdAsync(id);
-            if (family == null)
+            try
             {
-                return false;
-            }
+                var family = await GetFamilyByUserIdAsync(id);
+                if (family == null)
+                {
+                    return false;
+                }
 
-            if (family.UserCreatorId != id)
+                if (family.UserCreatorId != id)
+                {
+                    return false;
+                }
+
+                if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
+                {
+                    await context.DeleteRangeAsync(family.FamilyMembers);
+                }
+
+                return await context.DeleteAsync(family);
+            }
+            catch (Exception ex)
             {
-                return false;
+                throw new DatabaseException(GetType().Name, ex);
             }
-
-            if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
-            {
-                await context.DeleteRangeAsync(family.FamilyMembers);
-            }
-
-            return await context.DeleteAsync(family);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace MyParentApi.Shared
+﻿namespace MyParentApi.Shared.Enums
 {
     public class SystemNoteStatusCode
     {

@@ -1,8 +1,8 @@
-﻿namespace MyParentApi.Shared
+﻿namespace MyParentApi.Shared.Enums
 {
     public class SystemRoleName
     {
-        public const string 
+        public const string
             RoleAdmin = "Admin",
             RoleParent = "User",
             RoleChildren = "Children";

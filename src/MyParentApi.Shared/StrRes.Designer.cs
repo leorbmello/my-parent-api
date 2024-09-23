@@ -151,6 +151,15 @@ namespace MyParentApi.Shared {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Password Change.
+        /// </summary>
+        public static string StrOperationPasswordChange {
+            get {
+                return ResourceManager.GetString("StrOperationPasswordChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Password Recovery Requested.
         /// </summary>
         public static string StrOperationRecoveryRequest {
@@ -160,11 +169,65 @@ namespace MyParentApi.Shared {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Não foi possível alterar a senha, contate um administrador!.
+        /// </summary>
+        public static string StrPasswordChangeError {
+            get {
+                return ResourceManager.GetString("StrPasswordChangeError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a As senhas informadas não coincidem..
+        /// </summary>
+        public static string StrPasswordChangeNotMatch {
+            get {
+                return ResourceManager.GetString("StrPasswordChangeNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Senha alterada com sucesso!.
+        /// </summary>
+        public static string StrPasswordChangeSuccess {
+            get {
+                return ResourceManager.GetString("StrPasswordChangeSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A senha não atinge os critérios válidos de segurança!.
+        /// </summary>
+        public static string StrPasswordSecurityLow {
+            get {
+                return ResourceManager.GetString("StrPasswordSecurityLow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Ocorreu um erro durante a criação de uma requisição de recuperação de senha..
         /// </summary>
         public static string StrRecoveryError {
             get {
                 return ResourceManager.GetString("StrRecoveryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Método de recuperação de senha inválido!.
+        /// </summary>
+        public static string StrRecoveryInvalid {
+            get {
+                return ResourceManager.GetString("StrRecoveryInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a O token informado para recuperação é inválido..
+        /// </summary>
+        public static string StrRecoveryInvalidToken {
+            get {
+                return ResourceManager.GetString("StrRecoveryInvalidToken", resourceCulture);
             }
         }
         
@@ -214,6 +277,15 @@ namespace MyParentApi.Shared {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Sucesso.
+        /// </summary>
+        public static string StrTitleSuccess {
+            get {
+                return ResourceManager.GetString("StrTitleSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Aviso.
         /// </summary>
         public static string StrTitleWarning {
@@ -246,6 +318,15 @@ namespace MyParentApi.Shared {
         public static string StrUserHasFamily {
             get {
                 return ResourceManager.GetString("StrUserHasFamily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a A senha informada não confere..
+        /// </summary>
+        public static string StrUserPasswordNotMatch {
+            get {
+                return ResourceManager.GetString("StrUserPasswordNotMatch", resourceCulture);
             }
         }
     }

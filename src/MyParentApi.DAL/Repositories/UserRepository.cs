@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyParentApi.DAL.Entities;
 using MyParentApi.DAL.Interfaces;
+using MyParentApi.Shared.Helpers.Exceptions;
 
 namespace MyParentApi.DAL.Repositories
 {
@@ -39,7 +40,7 @@ namespace MyParentApi.DAL.Repositories
         {
             if (!await context.CreateAsync(newUser))
             {
-                throw new SystemException(StrNewUserCannotSave);
+                throw new DatabaseException(GetType().Name, StrNewUserCannotSave);
             }
 
             var dbUserRole = new ApiUserRole()
@@ -50,7 +51,7 @@ namespace MyParentApi.DAL.Repositories
 
             if (!await context.CreateAsync(dbUserRole))
             {
-                throw new SystemException(string.Format(StrNewUserRoleNotCreated, newUser.Email));
+                throw new DatabaseException(GetType().Name, string.Format(StrNewUserRoleNotCreated, newUser.Email));
             }
 
             return newUser;
@@ -119,13 +120,14 @@ namespace MyParentApi.DAL.Repositories
             var token = await GetRecoveryKeyAsync(email);
             if (token != null)
             {
+                //token already exist, just return true and ignore the process...
                 return true;
             }
 
             var recovery = new ApiUserRecovery()
             {
                 Email = email,
-                Token = token
+                Token = passRecoveryKey
             };
 
             return await context.CreateAsync(recovery);
@@ -134,8 +136,10 @@ namespace MyParentApi.DAL.Repositories
         public async Task<bool> DeletePassRecoveryAsync(string passRecoveryKey)
         {
             var recovery = await context.UserRecovery.FirstOrDefaultAsync(x => x.Token.Equals(passRecoveryKey));
-            if (recovery == null)
+            if (recovery == null) 
             {
+                // nothing to delete, the operation may need the delete process to continue some operation,
+                // return false to prevent logical errors.
                 return false;
             }
 

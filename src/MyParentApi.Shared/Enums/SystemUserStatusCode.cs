@@ -1,8 +1,8 @@
-﻿namespace MyParentApi.Shared
+﻿namespace MyParentApi.Shared.Enums
 {
     public class SystemUserStatusCode
     {
-        public const byte 
+        public const byte
             StatusActive = 1,
             StatusInactive = 2,
             StatusBanned = 3;

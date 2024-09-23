@@ -11,10 +11,13 @@ namespace MyParentApi.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService authService;
+        private readonly IProfileService profileService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService,
+            IProfileService profileService)
         {
             this.authService = authService;
+            this.profileService = profileService;
         }
 
         [HttpPost("login")]
@@ -33,6 +36,13 @@ namespace MyParentApi.Api.Controllers
         public async Task<IActionResult> PasswordRecorverAsync([FromBody] PasswordRecoveryRequest request)
         {
             return Ok(await authService.RecoveryPasswordAsync(request));
+        }
+
+
+        [HttpPost("change-password-by-rec")]
+        public async Task<IActionResult> ChangePasswordByRecAsync([FromBody] PasswordChangeRequest request)
+        {
+            return Ok(await profileService.ChangePasswordByTokenAsync(request));
         }
 
         /*[HttpPost("logout")]

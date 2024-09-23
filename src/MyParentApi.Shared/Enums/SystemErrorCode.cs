@@ -1,8 +1,8 @@
-﻿namespace MyParentApi.Shared
+﻿namespace MyParentApi.Shared.Enums
 {
     public static class SystemErrorCode
     {
-        public const int 
+        public const int
             SystemErrorCode_None = 0,
             SystemErrorCode_InvalidCredentials = 1,
             SystemErrorCode_LoginOk = 2,
