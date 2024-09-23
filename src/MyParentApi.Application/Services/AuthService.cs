@@ -45,7 +45,7 @@ namespace MyParentApi.Application.Services
                 var user = await userRepository.GetUserAsync(request.Email);
                 if (user == null || !CheckPassword(request.Password, user.PasswordHash, user.Salt))
                 {
-                    return new AuthResponse(SystemErrorCode_InvalidCredentials);
+                    return new AuthResponse(SystemErrorCode_InvalidCredentials, StrAuthInvalid);
                 }
 
                 return new AuthResponse(SystemErrorCode_LoginOk, tokenService.GenerateToken(user));
@@ -90,10 +90,10 @@ namespace MyParentApi.Application.Services
                 var newUser = await userRepository.CreateUserAsync(dbUser, roleTypeId);
                 if (newUser == null)
                 {
-                    throw new SystemException("Could not create the user!");
+                    throw new SystemException(string.Format(StrUserCannotCreate, request.Email));
                 }
 
-                await sysLogService.SaveUserLogAsync(dbUser.Id, "New User Create Operation", JsonSerializer.Serialize(dbUser));
+                await sysLogService.SaveUserLogAsync(dbUser.Id, StrOperationNewUser, JsonSerializer.Serialize(dbUser));
                 return new CreateUserResponse(dbUser.Email, dbUser.Name);
             }
             catch (Exception ex)
@@ -110,17 +110,17 @@ namespace MyParentApi.Application.Services
                 var user = await userRepository.GetUserAsync(request.Email);
                 if (user == null)
                 {
-                    return new GenericResponse("Erro", "Usuário de email não cadastrado!");
+                    return new GenericResponse(StrTitleError, string.Format(StrRecoverySent, request.Email));
                 }
 
                 var token = WhirlPoolHashService.GenerateSalt();
                 if (!await userRepository.CreatePassRecoveryAsync(request.Email, token))
                 {
-                    throw new SystemException("Could not create the recovery request!");
+                    throw new SystemException(StrRecoveryError);
                 }
 
-                await sysLogService.SaveUserLogAsync(user.Id, "Password Recovery Request", $"Email: {request.Email}; Token:{token}");
-                return new GenericResponse("", token);
+                await sysLogService.SaveUserLogAsync(user.Id, StrOperationRecoveryRequest, $"Email: {request.Email}; Token:{token}");
+                return new GenericResponse(StrTitleNone, token);
             }
             catch (Exception ex)
             {

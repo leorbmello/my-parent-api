@@ -39,7 +39,7 @@ namespace MyParentApi.DAL.Repositories
         {
             if (!await context.CreateAsync(newUser))
             {
-                throw new SystemException("Could not create the user!");
+                throw new SystemException(StrNewUserCannotSave);
             }
 
             var dbUserRole = new ApiUserRole()
@@ -50,7 +50,7 @@ namespace MyParentApi.DAL.Repositories
 
             if (!await context.CreateAsync(dbUserRole))
             {
-                throw new SystemException("Could not create the role for user!");
+                throw new SystemException(string.Format(StrNewUserRoleNotCreated, newUser.Email));
             }
 
             return newUser;
