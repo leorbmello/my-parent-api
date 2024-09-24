@@ -38,7 +38,6 @@ namespace MyParentApi.Api.Controllers
             return Ok(await notificationRepository.GetNotesAsync(userId));
         }
 
-
         [HttpGet("query-invite/{userId}")]
         public async Task<IActionResult> GetNotesAsync(int userId)
         {
@@ -61,14 +60,22 @@ namespace MyParentApi.Api.Controllers
                 throw new Exception("Usuário alvo não encontrado");
             }
 
-            return Ok(await notificationRepository.CreateNoteAsync(
-                sender, 
-                request.TargetId, 
+            bool result = await notificationRepository.CreateNoteAsync(
+                sender,
+                request.TargetId,
                 request.Title,
                 request.Description,
-                request.Content, 
-                request.Type == NoteTypeInvite)
-                );
+                request.Content,
+                request.Type == NoteTypeInvite);
+
+            if (result)
+            {
+                return Ok("Notificação criada com sucesso!");
+            }
+            else
+            {
+                return Ok("Fez cagada seu puto!");
+            }
         }
     }
 }

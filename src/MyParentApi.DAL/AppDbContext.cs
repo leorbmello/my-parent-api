@@ -48,6 +48,19 @@ namespace MyParentApi.DAL
                 .HasOne(u => u.UserInfo)
                 .WithOne(ui => ui.User)
                 .HasForeignKey<ApiUserInfo>(ui => ui.Id);
+
+            modelBuilder.Entity<ApiFamily>()
+                .HasOne(f => f.User)
+                .WithOne()
+                .HasForeignKey<ApiFamily>(f => f.UserCreatorId);
+
+            modelBuilder.Entity<ApiFamilyUser>()
+                .HasKey(fu => new { fu.FamilyId, fu.UserId });
+
+            modelBuilder.Entity<ApiFamilyUser>()
+                .HasOne(fu => fu.Family) 
+                .WithMany(f => f.FamilyMembers)
+                .HasForeignKey(fu => fu.FamilyId);
         }
 
         public async Task<bool> CreateAsync<T>(T entity, CancellationToken cancellationToken = default)

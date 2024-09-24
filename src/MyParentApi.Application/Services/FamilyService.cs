@@ -1,34 +1,50 @@
 ﻿using Microsoft.Extensions.Logging;
+using MyParentApi.Application.DTOs.Requests.Family;
 using MyParentApi.Application.DTOs.Responses;
+using MyParentApi.Application.Interfaces;
 using MyParentApi.DAL.Entities;
 using MyParentApi.DAL.Interfaces;
 
 namespace MyParentApi.Application.Services
 {
-    public class FamilyService
+    public class FamilyService : IFamilyService
     {
         private readonly ILogger<FamilyService> logger;
         private readonly IFamilyRepository familyRepository;
+        private readonly IUserRepository userRepository;
         private readonly INotificationRepository notificationRepository;
 
         public FamilyService(
             ILogger<FamilyService> logger,
             IFamilyRepository familyRepository,
+            IUserRepository userRepository,
             INotificationRepository notificationRepository)
         {
             this.logger = logger;
             this.familyRepository = familyRepository;
+            this.userRepository = userRepository;
             this.notificationRepository = notificationRepository;
         }
 
-        public async Task<ApiFamily> CreateNewFamilyAsync(ApiUser user, string name)
+        public async Task<ApiFamily> GetFamilyByIdAsync(int familyId)
+        {
+            return await familyRepository.GetFamilyByIdAsync(familyId);
+        }
+
+        public async Task<ApiFamily> CreateNewFamilyAsync(FamilyCreateRequest request)
         {
             try
             {
-                var family = familyRepository.GetFamilyByUserIdAsync(user.Id);
+                var user = await userRepository.GetUserAsync(request.Email);
+                if (user == null)
+                {
+                    throw new FamilyException(GetType().Name, StrUserNotFound);
+                }
+
+                var family = await familyRepository.GetFamilyByUserIdAsync(user.Id);
                 if (family == null) 
                 { 
-                    return await familyRepository.CreateFamilyAsync(user, name);
+                    return await familyRepository.CreateFamilyAsync(user, request.Name);
                 }
 
                 throw new Exception("Usuário já pertence à uma família!");
@@ -36,7 +52,7 @@ namespace MyParentApi.Application.Services
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
-                throw new SystemException(ex.ToString());
+                return null;
             }
         }
 
@@ -104,11 +120,11 @@ namespace MyParentApi.Application.Services
             }
         }
 
-        public async Task<bool> DeleteFamilyAsync(int familyId)
+        public async Task<bool> DeleteFamilyAsync(FamilyDeleteRequest request)
         {
             try
             {
-                return await familyRepository.DeleteFamilyAsync(familyId);
+                return await familyRepository.DeleteFamilyAsync(request.UserId, request.FamilyId);
             }
             catch (Exception ex)
             {

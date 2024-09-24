@@ -129,6 +129,9 @@
   <data name="StrFamilyNotMember" xml:space="preserve">
     <value>{0} não é um membro da familia {1}</value>
   </data>
+  <data name="StrFamilyNotOwner" xml:space="preserve">
+    <value>Usuário não é o criador desta família.</value>
+  </data>
   <data name="StrNewUserCannotSave" xml:space="preserve">
     <value>Não foi possível inserir um novo usuário no banco de dados.</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="StrUserHasFamily" xml:space="preserve">
     <value>{0} já faz parte de uma família e não pode ser convidado.</value>
+  </data>
+  <data name="StrUserNotFound" xml:space="preserve">
+    <value>Usuário não encontrado!</value>
   </data>
   <data name="StrUserPasswordNotMatch" xml:space="preserve">
     <value>A senha informada não confere.</value>

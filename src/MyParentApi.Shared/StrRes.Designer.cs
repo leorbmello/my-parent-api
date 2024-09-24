@@ -97,6 +97,15 @@ namespace MyParentApi.Shared {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário não é o criador desta família..
+        /// </summary>
+        public static string StrFamilyNotOwner {
+            get {
+                return ResourceManager.GetString("StrFamilyNotOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Não foi possível inserir um novo usuário no banco de dados..
         /// </summary>
         public static string StrNewUserCannotSave {
@@ -318,6 +327,15 @@ namespace MyParentApi.Shared {
         public static string StrUserHasFamily {
             get {
                 return ResourceManager.GetString("StrUserHasFamily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário não encontrado!.
+        /// </summary>
+        public static string StrUserNotFound {
+            get {
+                return ResourceManager.GetString("StrUserNotFound", resourceCulture);
             }
         }
         

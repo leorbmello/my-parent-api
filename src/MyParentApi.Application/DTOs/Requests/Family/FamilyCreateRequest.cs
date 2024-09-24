@@ -1,12 +1,16 @@
-﻿namespace MyParentApi.Application.DTOs.Requests.Family
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MyParentApi.Application.DTOs.Requests.Family
 {
     public record FamilyCreateRequest
     {
-        public FamilyCreateRequest(string familyName)
+        public FamilyCreateRequest(string email, string name)
         {
-            Name = familyName;
+            Email = email;
+            Name = name;
         }
 
-        public string Name { get; init; }
+        [Required] public string Email { get; init; }
+        [Required] public string Name { get; init; }
     }
 }

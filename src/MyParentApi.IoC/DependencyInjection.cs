@@ -21,6 +21,7 @@ namespace MyParentApi.IoC
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IProfileService, ProfileService>();
+            services.AddScoped<IFamilyService, FamilyService>();
             services.AddScoped<ISysLogService, SysLogService>();
 
             services.AddScoped<IUserRepository, UserRepository>();

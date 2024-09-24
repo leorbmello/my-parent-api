@@ -11,7 +11,7 @@ namespace MyParentApi.DAL.Interfaces
         Task<bool> UpdateFamilyAsync(ApiFamily family);
         Task<bool> JoinFamilyAsync(int familyId, int userId);
         Task<bool> DeleteMemberAsync(int id);
-        Task<bool> DeleteFamilyAsync(int id);
+        Task<bool> DeleteFamilyAsync(int userId, int id);
         Task<bool> DeleteFamilyByCreatorIdAsync(int id);
     }
 }

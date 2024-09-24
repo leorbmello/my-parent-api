@@ -6,9 +6,10 @@ namespace MyParentApi.DAL.Entities
     public class ApiFamilyUser
     {
         public int Id { get; set; }
-        public int FamilyId { get; set; }
         public int UserId { get; set; }
-
         public ApiUser User { get; set; }
+
+        public int FamilyId { get; set; }
+        public ApiFamily Family { get; set; }
     }
 }

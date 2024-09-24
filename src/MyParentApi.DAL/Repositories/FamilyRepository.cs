@@ -131,7 +131,7 @@ namespace MyParentApi.DAL.Repositories
             }
         }
 
-        public async Task<bool> DeleteFamilyAsync(int id)
+        public async Task<bool> DeleteFamilyAsync(int userId, int id)
         {
             try
             {
@@ -139,6 +139,11 @@ namespace MyParentApi.DAL.Repositories
                 if (family == null)
                 {
                     return false;
+                }
+
+                if (family.UserCreatorId != userId)
+                {
+                    throw new FamilyException(GetType().Name, StrFamilyNotOwner);
                 }
 
                 if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
