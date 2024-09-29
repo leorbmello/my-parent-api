@@ -34,82 +34,54 @@ namespace MyParentApi.DAL.Repositories
 
         public async Task<bool> CreateNoteAsync(ApiUser sender, int targetId, string title, string description, string content, bool invite = false)
         {
-            try
+            var notification = new ApiNotification()
             {
-                var notification = new ApiNotification()
-                {
-                    UserId = targetId,
-                    SenderId = sender?.Id ?? 0,
-                    Title = title,
-                    Description = description,
-                    Content = content,
-                    Status = StatusNoteNew,
-                    Type = invite ? NoteTypeInvite : NoteTypeNormal,
-                    CreatedAt = DateTime.Now,
-                };
+                UserId = targetId,
+                SenderId = sender?.Id ?? 0,
+                Title = title,
+                Description = description,
+                Content = content,
+                Status = StatusNoteNew,
+                Type = invite ? NoteTypeInvite : NoteTypeNormal,
+                CreatedAt = DateTime.Now,
+            };
 
-                return await context.CreateAsync(notification);
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseException(GetType().Name, ex);
-            }
+            return await context.CreateAsync(notification);
         }
 
         public async Task<bool> ReadNoteAsync(int notificationId)
         {
-            try
+            var notification = await context.Notifications.FirstOrDefaultAsync(x => x.Id == notificationId);
+            if (notification == null)
             {
-                var notification = await context.Notifications.FirstOrDefaultAsync(x => x.Id == notificationId);
-                if (notification == null)
-                {
-                    return false;
-                }
+                throw new DatabaseException(GetType().Name, string.Format(StrNoteNotFound, notificationId));
+            }
 
-                notification.Status = StatusNoteRead;
-                notification.ReadAt = DateTime.Now;
-                return await context.UpdateAsync(notification);
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseException(GetType().Name, ex);
-            }
+            notification.Status = StatusNoteRead;
+            notification.ReadAt = DateTime.Now;
+            return await context.UpdateAsync(notification);
         }
 
         public async Task<bool> DeleteNoteAsync(int notificationId, byte noteType = NoteTypeNormal)
         {
-            try
+            var notification = await context.Notifications.FirstOrDefaultAsync(x => x.Id == notificationId);
+            if (notification == null)
             {
-                var notification = await context.Notifications.FirstOrDefaultAsync(x => x.Id == notificationId);
-                if (notification == null)
-                {
-                    return false;
-                }
+                throw new DatabaseException(GetType().Name, string.Format(StrNoteNotFound, notificationId));
+            }
 
-                return await context.DeleteAsync(notification);
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseException(GetType().Name, ex);
-            }
+            return await context.DeleteAsync(notification);
         }
 
         public async Task<bool> DeleteAllNotesAsync(int userId)
         {
-            try
+            var notes = await context.Notifications.Where(x => x.UserId == userId).ToListAsync();
+            if (notes == null || notes.Count == 0)
             {
-                var notes = await context.Notifications.Where(x => x.UserId == userId).ToListAsync();
-                if (notes == null || notes.Count == 0)
-                {
-                    return false;
-                }
+                throw new DatabaseException(GetType().Name, StrNotesNotFound);
+            }
 
-                return await context.DeleteRangeAsync(notes);
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseException(GetType().Name, ex);
-            }
+            return await context.DeleteRangeAsync(notes);
         }
     }
 }

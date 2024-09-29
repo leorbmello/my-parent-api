@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MyParentApi.IoC;
+using MyParentApi.Shared.Helpers;
 using Newtonsoft.Json.Linq;
 using System.Text;
 
@@ -90,6 +91,7 @@ namespace MyParentApi.Api
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();

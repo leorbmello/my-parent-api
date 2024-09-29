@@ -123,6 +123,12 @@
   <data name="StrDatabaseError" xml:space="preserve">
     <value>Ocorreu um erro no banco de dados, contate um administrador!</value>
   </data>
+  <data name="StrFamilyCannotCreate" xml:space="preserve">
+    <value>Não foi possível criar uma nova família!</value>
+  </data>
+  <data name="StrFamilyMemberRemoved" xml:space="preserve">
+    <value>Membero foi removido da família com sucesso!</value>
+  </data>
   <data name="StrFamilyNotFound" xml:space="preserve">
     <value>Família não encontrada.</value>
   </data>
@@ -138,8 +144,14 @@
   <data name="StrNewUserRoleNotCreated" xml:space="preserve">
     <value>Não foi possível inserir uma Role para o usuário {0}.</value>
   </data>
+  <data name="StrNoteNotFound" xml:space="preserve">
+    <value>Id de Notificação não encontrada: {0}</value>
+  </data>
   <data name="StrNoteSent" xml:space="preserve">
     <value>Mensagem enviada para {0}</value>
+  </data>
+  <data name="StrNotesNotFound" xml:space="preserve">
+    <value>Nenhuma notificação encontrada para este usuário.</value>
   </data>
   <data name="StrOperationNewFamily" xml:space="preserve">
     <value>New Family Created</value>
@@ -204,8 +216,20 @@
   <data name="StrUserCannotCreate" xml:space="preserve">
     <value>Não foi possível criar o usuário para {0}.</value>
   </data>
+  <data name="StrUserCannotJoinFamily" xml:space="preserve">
+    <value>Não foi possível entrar na família.</value>
+  </data>
+  <data name="StrUserFamilyOwner" xml:space="preserve">
+    <value>Usuário {0} é o proprietário da família, não pode ser removido!</value>
+  </data>
   <data name="StrUserHasFamily" xml:space="preserve">
     <value>{0} já faz parte de uma família e não pode ser convidado.</value>
+  </data>
+  <data name="StrUserHasNoInvite" xml:space="preserve">
+    <value>Não há nenhum invite para entrar em uma família!</value>
+  </data>
+  <data name="StrUserNotFamilyOwner" xml:space="preserve">
+    <value>Usuário não é um proprietário da família, membro não pode ser removido!</value>
   </data>
   <data name="StrUserNotFound" xml:space="preserve">
     <value>Usuário não encontrado!</value>

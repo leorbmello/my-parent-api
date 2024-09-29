@@ -6,6 +6,7 @@ using MyParentApi.Application.Services;
 using MyParentApi.DAL;
 using MyParentApi.DAL.Interfaces;
 using MyParentApi.DAL.Repositories;
+using MyParentApi.Shared.Helpers;
 
 namespace MyParentApi.IoC
 {

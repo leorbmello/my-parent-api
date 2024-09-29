@@ -79,6 +79,24 @@ namespace MyParentApi.Shared {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Não foi possível criar uma nova família!.
+        /// </summary>
+        public static string StrFamilyCannotCreate {
+            get {
+                return ResourceManager.GetString("StrFamilyCannotCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Membero foi removido da família com sucesso!.
+        /// </summary>
+        public static string StrFamilyMemberRemoved {
+            get {
+                return ResourceManager.GetString("StrFamilyMemberRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Família não encontrada..
         /// </summary>
         public static string StrFamilyNotFound {
@@ -124,11 +142,29 @@ namespace MyParentApi.Shared {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Id de Notificação não encontrada: {0}.
+        /// </summary>
+        public static string StrNoteNotFound {
+            get {
+                return ResourceManager.GetString("StrNoteNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Mensagem enviada para {0}.
         /// </summary>
         public static string StrNoteSent {
             get {
                 return ResourceManager.GetString("StrNoteSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Nenhuma notificação encontrada para este usuário..
+        /// </summary>
+        public static string StrNotesNotFound {
+            get {
+                return ResourceManager.GetString("StrNotesNotFound", resourceCulture);
             }
         }
         
@@ -322,11 +358,47 @@ namespace MyParentApi.Shared {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Não foi possível entrar na família..
+        /// </summary>
+        public static string StrUserCannotJoinFamily {
+            get {
+                return ResourceManager.GetString("StrUserCannotJoinFamily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário {0} é o proprietário da família, não pode ser removido!.
+        /// </summary>
+        public static string StrUserFamilyOwner {
+            get {
+                return ResourceManager.GetString("StrUserFamilyOwner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a {0} já faz parte de uma família e não pode ser convidado..
         /// </summary>
         public static string StrUserHasFamily {
             get {
                 return ResourceManager.GetString("StrUserHasFamily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Não há nenhum invite para entrar em uma família!.
+        /// </summary>
+        public static string StrUserHasNoInvite {
+            get {
+                return ResourceManager.GetString("StrUserHasNoInvite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Usuário não é um proprietário da família, membro não pode ser removido!.
+        /// </summary>
+        public static string StrUserNotFamilyOwner {
+            get {
+                return ResourceManager.GetString("StrUserNotFamilyOwner", resourceCulture);
             }
         }
         

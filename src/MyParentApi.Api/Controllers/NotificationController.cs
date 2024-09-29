@@ -29,24 +29,12 @@ namespace MyParentApi.Api.Controllers
         [HttpGet("query-all/{userId}")]
         public async Task<IActionResult> GetAllNotesAsync(int userId)
         {
-            var target = await userRepository.GetUserByIdAsync(userId);
-            if (target == null)
-            {
-                throw new Exception("Usuário alvo não encontrado");
-            }
-
             return Ok(await notificationRepository.GetNotesAsync(userId));
         }
 
         [HttpGet("query-invite/{userId}")]
         public async Task<IActionResult> GetNotesAsync(int userId)
         {
-            var target = await userRepository.GetUserByIdAsync(userId);
-            if (target == null)
-            {
-                throw new Exception("Usuário alvo não encontrado");
-            }
-
             return Ok(await notificationRepository.GetNotesByTypeAsync(userId, NoteTypeInvite));
         }
 

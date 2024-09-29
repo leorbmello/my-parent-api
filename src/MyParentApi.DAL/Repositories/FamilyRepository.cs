@@ -52,139 +52,97 @@ namespace MyParentApi.DAL.Repositories
 
         public async Task<ApiFamily> CreateFamilyAsync(ApiUser user, string name)
         {
-            try
+            var family = new ApiFamily()
             {
-                var family = new ApiFamily()
+                Name = name,
+                UserCreatorId = user.Id,
+                Status = StatusActive,
+                CreatedAt = DateTime.Now,
+            };
+
+            if (await context.CreateAsync(family))
+            {
+                var familyUser = new ApiFamilyUser()
                 {
-                    Name = name,
-                    UserCreatorId = user.Id,
-                    Status = StatusActive,
-                    CreatedAt = DateTime.Now,
+                    FamilyId = family.Id,
+                    UserId = user.Id,
                 };
 
-                if (await context.CreateAsync(family))
-                {
-                    var familyUser = new ApiFamilyUser()
-                    {
-                        FamilyId = family.Id,
-                        UserId = user.Id,
-                    };
-
-                    await context.CreateAsync(familyUser);
-                    return family;
-                }
-
-                return null;
+                await context.CreateAsync(familyUser);
+                return family;
             }
-            catch (Exception ex)
-            {
-                throw new DatabaseException(GetType().Name, ex);
-            }
+
+            throw new DatabaseException(GetType().Name, StrFamilyCannotCreate);
         }
 
         public async Task<bool> UpdateFamilyAsync(ApiFamily family)
         {
-            try
-            {
-                family.ModifiedAt = DateTime.Now;
-                return await context.UpdateAsync(family);
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseException(GetType().Name, ex);
-            }
+            family.ModifiedAt = DateTime.Now;
+            return await context.UpdateAsync(family);
         }
 
         public async Task<bool> JoinFamilyAsync(int familyId, int userId)
         {
-            try
+            var familyUser = new ApiFamilyUser()
             {
-                var familyUser = new ApiFamilyUser()
-                {
-                    FamilyId = familyId,
-                    UserId = userId,
-                };
+                FamilyId = familyId,
+                UserId = userId,
+            };
 
-                return await context.CreateAsync(familyUser);
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseException(GetType().Name, ex);
-            }
+            return await context.CreateAsync(familyUser);
         }
 
         public async Task<bool> DeleteMemberAsync(int id)
         {
-            try
+            var member = await context.FamilyUsers.FirstOrDefaultAsync(x => x.UserId == id);
+            if (member == null)
             {
-                var member = await context.FamilyUsers.FirstOrDefaultAsync(x => x.UserId == id);
-                if (member == null)
-                {
-                    return false;
-                }
+                throw new FamilyException(GetType().Name, StrUserNotFound);
+            }
 
-                return await context.DeleteAsync(member);
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseException(GetType().Name, ex);
-            }
+            return await context.DeleteAsync(member);
         }
 
         public async Task<bool> DeleteFamilyAsync(int userId, int id)
         {
-            try
+            var family = await GetFamilyByIdAsync(id);
+            if (family == null)
             {
-                var family = await GetFamilyByIdAsync(id);
-                if (family == null)
-                {
-                    return false;
-                }
-
-                if (family.UserCreatorId != userId)
-                {
-                    throw new FamilyException(GetType().Name, StrFamilyNotOwner);
-                }
-
-                if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
-                {
-                    await context.DeleteRangeAsync(family.FamilyMembers);
-                }
-
-                return await context.DeleteAsync(family);
+                return false;
             }
-            catch (Exception ex)
+
+            if (family.UserCreatorId != userId)
             {
-                throw new DatabaseException(GetType().Name, ex);
+                throw new FamilyException(GetType().Name, StrFamilyNotOwner);
             }
+
+            if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
+            {
+                await context.DeleteRangeAsync(family.FamilyMembers);
+            }
+
+            return await context.DeleteAsync(family);
         }
 
         public async Task<bool> DeleteFamilyByCreatorIdAsync(int id)
         {
-            try
+            var family = await GetFamilyByUserIdAsync(id);
+            if (family == null)
             {
-                var family = await GetFamilyByUserIdAsync(id);
-                if (family == null)
-                {
-                    return false;
-                }
-
-                if (family.UserCreatorId != id)
-                {
-                    return false;
-                }
-
-                if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
-                {
-                    await context.DeleteRangeAsync(family.FamilyMembers);
-                }
-
-                return await context.DeleteAsync(family);
+                throw new FamilyException(GetType().Name, StrFamilyNotFound);
             }
-            catch (Exception ex)
+
+            if (family.UserCreatorId != id)
             {
-                throw new DatabaseException(GetType().Name, ex);
+                throw new FamilyException(GetType().Name, StrFamilyNotOwner);
             }
+
+            if (family.FamilyMembers != null && family.FamilyMembers.Count > 0)
+            {
+                await context.DeleteRangeAsync(family.FamilyMembers);
+            }
+
+            return await context.DeleteAsync(family);
         }
     }
 }
