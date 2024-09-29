@@ -39,7 +39,8 @@ namespace MyParentApi.Shared.Helpers
                 _ => StatusCodes.Status500InternalServerError
             };
 
-            var result = JsonSerializer.Serialize(new { error = exception.Message });
+            string errorMessage = (exception as HttpExceptionBase)?.Error?.ToString();
+            var result = JsonSerializer.Serialize(new { message = errorMessage, exception = exception.Message });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
 

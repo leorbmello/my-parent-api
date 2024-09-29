@@ -24,7 +24,13 @@ namespace MyParentApi.Application.Services
 
         public async Task<ApiFamily> GetFamilyByIdAsync(int familyId)
         {
-            return await familyRepository.GetFamilyByIdAsync(familyId);
+            var family = await familyRepository.GetFamilyByIdAsync(familyId);
+            if (family == null)
+            {
+                throw new FamilyException(GetType().Name, StrFamilyNotFound);
+            }
+
+            return family;
         }
 
         public async Task<ApiFamily> CreateNewFamilyAsync(FamilyCreateRequest request)
